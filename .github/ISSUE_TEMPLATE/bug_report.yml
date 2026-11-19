@@ -1,0 +1,23 @@
+name: Bug report
+description: A leak was missed, a clean split was flagged, or a check crashed
+labels: [bug]
+body:
+  - type: dropdown
+    id: check
+    attributes:
+      label: Check
+      options: [single feature, row overlap, entity overlap, time, CLI, pytest helper]
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened, and what you expected
+    validations:
+      required: true
+  - type: textarea
+    id: command
+    attributes:
+      label: Command and environment
+      description: The exact command, a few rows that reproduce it (made up is fine), and the Python version.
+      render: shell
