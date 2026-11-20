@@ -52,9 +52,13 @@ mypy-extensions==1.2.0
 nodeenv==1.12.0
     # via pre-commit
 numpy==2.4.6 ; python_full_version < '3.12'
-    # via leakcheck (pyproject.toml)
+    # via
+    #   leakcheck (pyproject.toml)
+    #   pandas
 numpy==2.5.5 ; python_full_version >= '3.12'
-    # via leakcheck (pyproject.toml)
+    # via
+    #   leakcheck (pyproject.toml)
+    #   pandas
 packageurl-python==0.17.6
     # via cyclonedx-python-lib
 packaging==26.3
@@ -63,6 +67,8 @@ packaging==26.3
     #   pip-requirements-parser
     #   pytest
     #   virtualenv
+pandas==3.1.1
+    # via leakcheck (pyproject.toml)
 pathspec==1.1.1
     # via mypy
 pip==26.3
@@ -99,6 +105,8 @@ pytest==9.2.0
     #   pytest-cov
 pytest-cov==7.1.0
     # via leakcheck (pyproject.toml)
+python-dateutil==4.0.0
+    # via pandas
 python-discovery==1.9.6
     # via virtualenv
 pyyaml==6.0.3
@@ -121,6 +129,10 @@ typing-extensions==4.16.0
     # via
     #   cyclonedx-python-lib
     #   mypy
+tzdata==2026.6
+    # via
+    #   pandas
+    #   python-dateutil
 urllib3==2.8.0
     # via requests
 virtualenv==21.15.9

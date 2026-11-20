@@ -47,17 +47,19 @@ findings and 2 when the files could not be checked, so it can run as a CI step a
 split is written. `--json` prints the report for other tools, and `--ignore COLUMN`
 leaves a column out once you have decided it is fine.
 
-## From Python
+## In a test suite
 
 ```python
-from leakcheck.checks import check
+from leakcheck.testing import assert_no_leakage
 
-report = check(train_table, test_table, target="churned", entities=["customer_id"])
-assert report.clean, report.findings
+def test_the_training_split_does_not_leak():
+    train, test = make_split()
+    assert_no_leakage(train, test, target="churned", entities=["customer_id"])
 ```
 
-`train_table` and `test_table` are Arrow tables; for pandas, use
-`pyarrow.Table.from_pandas(df)`.
+`train` and `test` can be pandas DataFrames or Arrow tables. A leaky split fails the
+test with every finding in the message. For the report itself, call
+`leakcheck.checks.check` with Arrow tables.
 
 ## Limits
 
