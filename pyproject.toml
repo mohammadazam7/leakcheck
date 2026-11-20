@@ -13,6 +13,9 @@ authors = [{ name = "Mohammad Azam" }]
 keywords = ["machine-learning", "data-leakage", "evaluation", "train-test-split", "pytest"]
 dependencies = ["pyarrow>=16"]
 
+[project.scripts]
+leakcheck = "leakcheck.cli:main"
+
 [project.urls]
 Repository = "https://github.com/mohammadazam7/leakcheck"
 
