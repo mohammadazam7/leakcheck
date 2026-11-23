@@ -52,6 +52,7 @@ leaves a column out once you have decided it is fine.
 ```python
 from leakcheck.testing import assert_no_leakage
 
+
 def test_the_training_split_does_not_leak():
     train, test = make_split()
     assert_no_leakage(train, test, target="churned", entities=["customer_id"])
