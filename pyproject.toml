@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "leakcheck"
-version = "0.0.1"
+version = "0.1.0"
 description = "Find data leakage in a train/test split before you trust the score."
 readme = "README.md"
 requires-python = ">=3.11"

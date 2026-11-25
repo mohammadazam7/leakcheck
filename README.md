@@ -19,15 +19,14 @@ would score well and then disappoint: it can read the answer from a field filled
 after the customer left, it has already seen most test customers, and it learned from
 months that come after the test period.
 
-> **Status:** early. The checks come from
+> The checks come from
 > [ml-research-agent](https://github.com/mohammadazam7/ml-research-agent), where they run
-> before any model is trained; this package makes them usable on any split. The first
-> release is planned for the end of November.
+> before any model is trained; this package makes them usable on any split.
 
 ## Install
 
 ```bash
-pip install git+https://github.com/mohammadazam7/leakcheck
+pip install git+https://github.com/mohammadazam7/leakcheck@v0.1.0
 ```
 
 Python 3.11 or later. The only dependency is pyarrow.
