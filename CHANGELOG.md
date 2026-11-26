@@ -6,6 +6,13 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+- A playground that runs the package in the browser on Pyodide: two sample splits, or
+  two CSV files of your own that stay on your machine. Every finding is shown with what
+  was measured and the matching command line.
+- `leakcheck.checks.align`, the type alignment the command line applies to two tables
+  read from files.
+
 ## [0.1.0] - 2026-11-25
 
 First release.

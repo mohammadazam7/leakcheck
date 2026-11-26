@@ -1,0 +1,6 @@
+node_modules/
+dist/
+# Written by scripts/prepare-py.sh: the Pyodide runtime, the wheels and the sample data.
+public/pyodide/
+public/py/
+public/samples/
