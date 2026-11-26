@@ -291,6 +291,23 @@ def _later(value: object, cutoff: object) -> bool:
     return value > cutoff
 
 
+def align(train: pa.Table, test: pa.Table) -> tuple[pa.Table, pa.Table]:
+    """Give ``train`` the wider type where a column is int in one table and float in the other.
+
+    Two files read separately often disagree this way, and ``check`` needs one schema.
+    """
+    columns = []
+    for name in train.column_names:
+        if name not in test.column_names:
+            return train, test  # check() reports the mismatch
+        a, b = train.schema.field(name).type, test.schema.field(name).type
+        if a != b and pa.types.is_integer(a) and pa.types.is_floating(b):
+            columns.append(pa.field(name, b))
+        else:
+            columns.append(train.schema.field(name))
+    return train.cast(pa.schema(columns)), test
+
+
 def check(
     train: pa.Table,
     test: pa.Table,

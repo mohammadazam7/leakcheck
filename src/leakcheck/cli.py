@@ -17,7 +17,7 @@ import pyarrow.csv as pacsv
 import pyarrow.parquet as pq
 
 from leakcheck import __version__
-from leakcheck.checks import LeakcheckError, Report, check
+from leakcheck.checks import LeakcheckError, Report, align, check
 
 
 def read_table(path: Path) -> pa.Table:
@@ -28,20 +28,6 @@ def read_table(path: Path) -> pa.Table:
         options = pacsv.ParseOptions(delimiter="\t" if suffix == ".tsv" else ",")
         return pacsv.read_csv(path, parse_options=options)
     raise LeakcheckError(f"{path}: expected a .csv, .tsv or .parquet file")
-
-
-def _align(train: pa.Table, test: pa.Table) -> tuple[pa.Table, pa.Table]:
-    """Read separately, a column can come back as int in one file and float in the other."""
-    columns = []
-    for name in train.column_names:
-        if name not in test.column_names:
-            return train, test  # check() reports the mismatch
-        a, b = train.schema.field(name).type, test.schema.field(name).type
-        if a != b and pa.types.is_integer(a) and pa.types.is_floating(b):
-            columns.append(pa.field(name, b))
-        else:
-            columns.append(train.schema.field(name))
-    return train.cast(pa.schema(columns)), test
 
 
 def _text(report: Report) -> str:
@@ -97,7 +83,7 @@ def build_parser() -> argparse.ArgumentParser:
 def main(argv: Sequence[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     try:
-        train, test = _align(read_table(args.train), read_table(args.test))
+        train, test = align(read_table(args.train), read_table(args.test))
         report = check(
             train,
             test,
