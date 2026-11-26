@@ -23,6 +23,15 @@ months that come after the test period.
 > [ml-research-agent](https://github.com/mohammadazam7/ml-research-agent), where they run
 > before any model is trained; this package makes them usable on any split.
 
+## Try it in your browser
+
+[![The playground: three findings on the careless split, with the leaking columns marked](docs/images/playground.png)](https://mohammadazam7.github.io/leakcheck/)
+
+The [playground](https://mohammadazam7.github.io/leakcheck/) runs this package in the
+page, on Pyodide, with nothing to install. It opens on the careless split above, has a
+careful split of the same rows to compare, and checks two CSV files of your own without
+sending them anywhere. The source is in [`playground/`](playground/).
+
 ## Install
 
 ```bash
