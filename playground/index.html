@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>leakcheck playground: can you trust this test score?</title>
+    <meta
+      name="description"
+      content="Try leakcheck, which finds data leakage in a train/test split. Load a sample split or your own two CSV files and see which columns give the answer away. The real Python package runs in your browser."
+    />
+  </head>
+  <body>
+    <div class="page">
+      <header class="top">
+        <span class="wordmark">leakcheck</span>
+        <span class="runtime" id="runtime" role="status">Starting Python in your browser</span>
+        <a href="https://github.com/mohammadazam7/leakcheck">Source and install</a>
+      </header>
+
+      <main>
+        <h1>The model scored 99%. Did it see the answers?</h1>
+        <p class="standfirst">
+          A model is trained on one part of the data and scored on the rest. When the answer
+          slips from one part into the other, the score looks excellent and means nothing.
+          leakcheck finds where it slips through, before any model is trained.
+        </p>
+
+        <section class="source" aria-labelledby="source-title">
+          <h2 id="source-title">The split to check</h2>
+          <div class="tabs" role="group" aria-label="Data to check">
+            <button type="button" id="pick-careless" aria-pressed="true">A careless split</button>
+            <button type="button" id="pick-careful" aria-pressed="false">A careful split</button>
+            <button type="button" id="pick-own" aria-pressed="false">Your own files</button>
+          </div>
+          <p class="about" id="about"></p>
+          <div class="own" id="own" hidden>
+            <label for="train-file">Training rows, as CSV</label>
+            <input type="file" id="train-file" accept=".csv,text/csv" />
+            <label for="test-file">Test rows, as CSV</label>
+            <input type="file" id="test-file" accept=".csv,text/csv" />
+            <p class="hint">
+              The files are read by this page and stay on your machine. Up to 25 MB each.
+            </p>
+          </div>
+          <p class="field-error" id="load-error" role="alert" hidden></p>
+        </section>
+
+        <div class="bench" id="bench" hidden>
+          <section class="roles" aria-labelledby="roles-title">
+            <h2 id="roles-title">What the columns are</h2>
+            <label for="target">The column to predict</label>
+            <select id="target"></select>
+            <label for="time">The date the split was made on</label>
+            <select id="time"></select>
+            <fieldset>
+              <legend>Who or what a row is about</legend>
+              <div class="chips" id="entities"></div>
+              <p class="hint">Such as a customer or a patient: nobody should be on both sides.</p>
+            </fieldset>
+            <div class="ignored" id="ignored" hidden></div>
+          </section>
+
+          <section class="data" aria-labelledby="data-title">
+            <h2 id="data-title">The rows</h2>
+            <div class="split" id="split"></div>
+            <div class="table-scroll" tabindex="0" role="region" aria-label="First training rows">
+              <table id="preview"></table>
+            </div>
+            <p class="hint" id="legend"></p>
+          </section>
+        </div>
+
+        <section class="report" id="report" aria-live="polite" aria-labelledby="report-title" hidden>
+          <h2 id="report-title">Checking</h2>
+          <p class="summary" id="summary"></p>
+          <ol class="findings" id="findings"></ol>
+          <div class="command">
+            <p>The same check from a terminal or a CI step:</p>
+            <pre id="command"></pre>
+            <button type="button" id="copy">Copy command</button>
+          </div>
+        </section>
+
+        <section class="checks" aria-labelledby="checks-title">
+          <h2 id="checks-title">What it looks for</h2>
+          <dl>
+            <div>
+              <dt>A column that gives the answer away</dt>
+              <dd>
+                One column alone predicts the target almost perfectly on the test rows. Usually
+                it is the outcome recorded another way, or filled in afterwards.
+              </dd>
+            </div>
+            <div>
+              <dt>Copied rows</dt>
+              <dd>The same record, identical in every column, on both sides of the split.</dd>
+            </div>
+            <div>
+              <dt>The same customer on both sides</dt>
+              <dd>
+                The model is tested on people it has already seen, so it can recognise them
+                instead of learning anything general.
+              </dd>
+            </div>
+            <div>
+              <dt>The future in the training rows</dt>
+              <dd>
+                Training rows dated after the test period begins. In real use the model never
+                gets to learn from tomorrow.
+              </dd>
+            </div>
+          </dl>
+          <p class="hint">
+            A finding is a reason to look, not a verdict, and a split with no findings can still
+            leak in ways one column at a time cannot show. The
+            <a href="https://github.com/mohammadazam7/leakcheck#limits">limits are in the README</a>.
+          </p>
+        </section>
+      </main>
+
+      <footer>
+        <p>
+          This page runs the leakcheck Python package itself, with pyarrow, on Pyodide (Python
+          compiled to WebAssembly). The sample data is made up. Nothing you load leaves your
+          browser.
+        </p>
+      </footer>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

@@ -1,0 +1,574 @@
+/* A leak test with tracer dye: calm grey-green water, and one pink that only ever
+   marks a place where the answer gets through. */
+:root {
+  --water: #e4eae3;
+  --sheet: #f7f9f5;
+  --ink: #15201b;
+  --soft: #4f5f56;
+  --line: #bcc8bd;
+  --dye: #d5157a;
+  --dye-wash: #f9d3e6;
+  --dye-ink: #a30f5c;
+  --clear: #17694f;
+  --sans: "Schibsted Grotesk", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+body {
+  margin: 0;
+  background: var(--water);
+  color: var(--ink);
+  font: 400 1rem/1.55 var(--sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+.page {
+  max-width: 68rem;
+  margin: 0 auto;
+  padding: 0 1.25rem 3rem;
+}
+
+a {
+  color: inherit;
+  text-underline-offset: 0.2em;
+}
+
+:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 2px;
+}
+
+.top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 1.5rem;
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.9375rem;
+}
+
+.wordmark {
+  font: 600 1.0625rem var(--mono);
+  letter-spacing: -0.01em;
+}
+
+.runtime {
+  margin-right: auto;
+  color: var(--soft);
+}
+
+.runtime::before {
+  content: "";
+  display: inline-block;
+  width: 0.55rem;
+  height: 0.55rem;
+  margin-right: 0.5rem;
+  border-radius: 50%;
+  background: var(--line);
+}
+
+.runtime[data-ready="true"]::before {
+  background: var(--clear);
+}
+
+.runtime[data-ready="failed"]::before {
+  background: var(--dye);
+}
+
+h1 {
+  max-width: 17ch;
+  margin: 3.5rem 0 1.25rem;
+  font: 800 clamp(2.25rem, 6vw, 4.25rem) / 1.02 var(--sans);
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+.standfirst {
+  max-width: 62ch;
+  margin: 0 0 3rem;
+  font-size: 1.1875rem;
+  color: var(--soft);
+}
+
+h2 {
+  margin: 0 0 1rem;
+  font: 600 1.0625rem/1.3 var(--sans);
+}
+
+.hint {
+  max-width: 68ch;
+  margin: 0.5rem 0 0;
+  font-size: 0.875rem;
+  color: var(--soft);
+}
+
+button,
+select,
+input {
+  font: inherit;
+  color: inherit;
+}
+
+/* Choosing the data */
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.tabs button {
+  padding: 0.6rem 1.1rem;
+  border: 1.5px solid var(--ink);
+  border-radius: 999px;
+  background: transparent;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tabs button[aria-pressed="true"] {
+  background: var(--ink);
+  color: var(--sheet);
+}
+
+.about {
+  max-width: 68ch;
+  min-height: 3.1em;
+  margin: 0.9rem 0 0;
+  color: var(--soft);
+}
+
+.own {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.6rem 1rem;
+  align-items: center;
+  max-width: 40rem;
+  margin-top: 0.75rem;
+  padding: 1rem 1.25rem;
+  border: 1.5px dashed var(--line);
+  border-radius: 0.5rem;
+}
+
+.own .hint {
+  grid-column: 1 / -1;
+  margin: 0;
+}
+
+.own input {
+  min-width: 0;
+  font-size: 0.875rem;
+}
+
+.field-error {
+  max-width: 68ch;
+  margin: 1rem 0 0;
+  padding: 0.75rem 1rem;
+  border-left: 4px solid var(--dye);
+  background: var(--sheet);
+}
+
+/* The bench: roles on the left, the rows on the right */
+.bench {
+  display: grid;
+  grid-template-columns: minmax(15rem, 19rem) minmax(0, 1fr);
+  gap: 2.5rem;
+  margin-top: 2.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--line);
+}
+
+.roles label,
+.roles legend {
+  display: block;
+  margin: 0 0 0.35rem;
+  padding: 0;
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+.roles select {
+  width: 100%;
+  margin-bottom: 1.1rem;
+  padding: 0.55rem 0.7rem;
+  border: 1.5px solid var(--line);
+  border-radius: 0.375rem;
+  background: var(--sheet);
+  font-family: var(--mono);
+  font-size: 0.9375rem;
+}
+
+.roles select:disabled {
+  color: var(--soft);
+}
+
+.roles fieldset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.chips .chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0.3rem 0.65rem;
+  border: 1.5px solid var(--line);
+  border-radius: 0.375rem;
+  background: var(--sheet);
+  font: 400 0.875rem var(--mono);
+  cursor: pointer;
+}
+
+.chips .chip:has(input:checked) {
+  border-color: var(--ink);
+}
+
+.chips input {
+  margin: 0;
+  accent-color: var(--ink);
+}
+
+.ignored {
+  margin-top: 1.25rem;
+}
+
+.ignored p {
+  margin: 0 0 0.35rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+.restore,
+.leave-out,
+.command button {
+  padding: 0.4rem 0.8rem;
+  border: 1.5px solid var(--ink);
+  border-radius: 0.375rem;
+  background: transparent;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.restore {
+  margin: 0 0.4rem 0.4rem 0;
+}
+
+.split {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 0.75rem;
+  font-size: 0.875rem;
+}
+
+.split .side {
+  flex-basis: 0;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.25rem;
+  background: var(--ink);
+  color: var(--sheet);
+}
+
+.split .test {
+  background: transparent;
+  color: var(--ink);
+  box-shadow: inset 0 0 0 1.5px var(--ink);
+}
+
+.table-scroll {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: 0.375rem;
+  background: var(--sheet);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font: 400 0.875rem/1.4 var(--mono);
+  white-space: nowrap;
+}
+
+th,
+td {
+  padding: 0.5rem 0.9rem;
+  text-align: left;
+  border-bottom: 1px solid var(--line);
+}
+
+tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+th {
+  vertical-align: top;
+  border-bottom: 1.5px solid var(--ink);
+}
+
+th .name {
+  display: block;
+  font-weight: 600;
+}
+
+th .kind,
+th .role {
+  font: 400 0.75rem var(--sans);
+  color: var(--soft);
+}
+
+th .role {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+td .empty {
+  font-family: var(--sans);
+  color: var(--soft);
+  opacity: 0.75;
+}
+
+/* The dye. It runs down a column once, when a finding names it. */
+.dyed {
+  background: linear-gradient(var(--dye-wash), var(--dye-wash)) top / 100% 100% no-repeat;
+  animation: seep 0.55s ease-out both;
+}
+
+th.dyed {
+  box-shadow: inset 0 4px 0 var(--dye);
+}
+
+@keyframes seep {
+  from {
+    background-size: 100% 0;
+  }
+}
+
+/* The report */
+.report {
+  margin-top: 2.5rem;
+  padding: 2rem 2rem 1.75rem;
+  border-radius: 0.5rem;
+  background: var(--sheet);
+  border-top: 6px solid var(--line);
+}
+
+.report[data-state="leaks"] {
+  border-top-color: var(--dye);
+}
+
+.report[data-state="clean"] {
+  border-top-color: var(--clear);
+}
+
+.report h2 {
+  margin-bottom: 0.4rem;
+  font: 800 clamp(1.5rem, 3.4vw, 2.25rem) / 1.1 var(--sans);
+  letter-spacing: -0.025em;
+}
+
+.report[data-state="clean"] h2 {
+  color: var(--clear);
+}
+
+.summary {
+  max-width: 66ch;
+  margin: 0;
+  color: var(--soft);
+}
+
+.findings {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.finding {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  gap: 0.5rem 2.5rem;
+  padding: 1.5rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.finding:first-child {
+  margin-top: 1.5rem;
+  border-top: 1px solid var(--line);
+}
+
+.finding h3 {
+  margin: 0;
+  font: 600 1.1875rem/1.3 var(--sans);
+}
+
+.finding code {
+  padding: 0.05em 0.4em;
+  border-radius: 0.25rem;
+  background: var(--dye-wash);
+  color: var(--dye-ink);
+  font: 600 0.9em var(--mono);
+  white-space: nowrap;
+}
+
+.measure {
+  grid-row: span 2;
+  grid-column: 2;
+}
+
+.figure {
+  margin-right: 0.6rem;
+  font: 600 1.75rem/1 var(--mono);
+  letter-spacing: -0.03em;
+  color: var(--dye-ink);
+}
+
+.what {
+  font-size: 0.9375rem;
+  color: var(--soft);
+}
+
+.meter {
+  height: 0.75rem;
+  margin-top: 0.6rem;
+  border-radius: 999px;
+  background: var(--water);
+  overflow: hidden;
+}
+
+.fill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--dye);
+  animation: pour 0.6s ease-out both;
+  transform-origin: left;
+}
+
+@keyframes pour {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+.detail {
+  grid-column: 1;
+  margin: 0;
+  font-size: 0.9375rem;
+  color: var(--soft);
+}
+
+.leave-out {
+  grid-column: 1;
+  justify-self: start;
+  margin-top: 0.4rem;
+}
+
+.command {
+  margin-top: 1.75rem;
+}
+
+.command p {
+  margin: 0 0 0.5rem;
+  font-size: 0.9375rem;
+  color: var(--soft);
+}
+
+.command pre {
+  margin: 0 0 0.75rem;
+  padding: 0.9rem 1.1rem;
+  border-radius: 0.375rem;
+  background: var(--ink);
+  color: var(--sheet);
+  font: 400 0.875rem/1.5 var(--mono);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* What it looks for */
+.checks {
+  margin-top: 4rem;
+}
+
+.checks dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem 3rem;
+  margin: 0 0 1.5rem;
+}
+
+.checks dt {
+  font-weight: 600;
+}
+
+.checks dd {
+  max-width: 52ch;
+  margin: 0.2rem 0 0;
+  color: var(--soft);
+}
+
+footer {
+  margin-top: 3.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--line);
+  font-size: 0.875rem;
+  color: var(--soft);
+}
+
+footer p {
+  max-width: 72ch;
+  margin: 0;
+}
+
+@media (max-width: 52rem) {
+  .bench,
+  .finding,
+  .checks dl {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .measure {
+    grid-row: auto;
+    grid-column: 1;
+  }
+
+  .bench {
+    gap: 2rem;
+  }
+
+  .report {
+    padding: 1.5rem 1.1rem;
+  }
+
+  h1 {
+    margin-top: 2.25rem;
+  }
+
+  .own {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .split {
+    flex-direction: column;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dyed,
+  .fill {
+    animation: none;
+  }
+}
